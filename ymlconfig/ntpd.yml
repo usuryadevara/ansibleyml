@@ -1,0 +1,16 @@
+---
+- hosts: apache
+  remote_user: root 
+  tasks:
+  - name: Installing Latest version of ntp,ntpdate
+    yum: pkg=ntp,ntpdate state=latest
+  - name: Copying the demo file
+    template: src=/etc/ansible/ntpd/ntp.conf dest=/etc/
+     owner=root group=root mode=0644
+  - name: (Enable it on System Boot)
+    service: name=ntpd enabled=yes
+    notify:
+    - start ntpd
+  handlers:
+   - name: start ntpd
+     service: name=ntpd state=started
